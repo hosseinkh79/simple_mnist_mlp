@@ -19,6 +19,9 @@ class MLP(nn.Module):
 
         self.out_layer = nn.Linear(list_hidden_features_size[-1], num_classes)
 
+    def __repr__(self):
+        return(f'Model:{type(self).__name__} (num_hyden_layers:{len(self.hidden_layers)})')
+
     def forward(self, x):
         x = self.batch_norm_input(torch.relu(self.input_layer(x)))
 
