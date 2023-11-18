@@ -1,6 +1,9 @@
 import torch
 from torch import nn
 from tqdm.auto import tqdm
+from sklearn.model_selection  import StratifiedKFold
+from torch.utils.data import Subset
+from torch.utils.data import DataLoader
 
 
 #Train and test 
@@ -98,4 +101,43 @@ def train(model,
         )
         
     return results
+
+
+
+
+
+def cross_valid():
+
+    y = train_dataset.targets
+    dataset_indices = list(range(len(train_dataset)))
+
+    skf = StratifiedKFold(n_splits=3, shuffle=True, random_state=42)
+
+    batch_size = 64
+
+    kfold_tests_results = []
+    for fold, (train_index, val_index) in enumerate(skf.split(dataset_indices, y)):
+        
+        train_dataset_fold = Subset(train_dataset, train_index)
+        train_loader = DataLoader(train_dataset_fold, batch_size=batch_size, shuffle=True, num_workers=2)
+
+        valid_dataset_fold = Subset(train_dataset, val_index)
+        valid_loader = DataLoader(valid_dataset_fold, batch_size=batch_size, shuffle=True, num_workers=2)
+
+        results_each_fold = engine.train(model=model, 
+                                            train_dataloader=train_loader,
+                                            test_dataloader=valid_loader,
+                                            loss_fn=loss_fn, 
+                                            optimizer=optimizer, 
+                                            device=device,
+                                            epochs=1)
+        #return last test_acc 
+        last_test_acc = kfold_tests_results.append(results_each_fold['test_acc'][-1])
+
+        #save the model
+        save_model(model=model, results=results, hidden_layers=hiddens, epochs=epochs, lr=lr)
+        plot_loss_curves(results) 
+
+    print(f'test_accs is :{kfold_tests_results}')
+    print(f'test_acc mean for our model is :{sum(kfold_tests_results)/len(kfold_tests_results)}')
 
