@@ -4,6 +4,8 @@
 .ipynb
 data
 going_modular/__pycache__
+output
+mnist.ipynb
 
 __pycache__/
 *.py[cod]
