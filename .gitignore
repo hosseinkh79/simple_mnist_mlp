@@ -1,8 +1,7 @@
 # Created by https://www.toptal.com/developers/gitignore/api/windows,visualstudiocode,python,virtualenv
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,visualstudiocode,python,virtualenv
 
-### Python ###
-# Byte-compiled / optimized / DLL files
+.ipynb
 data
 going_modular/__pycache__
 
@@ -12,6 +11,7 @@ __pycache__/
 
 # C extensions
 *.so
+
 
 # Distribution / packaging
 .Python
